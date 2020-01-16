@@ -1,13 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 #include <omp.h>
+int change_index(int i,int j,int n){
+	return j+i*n;
+}
 int main(int argc, char const *argv[])
 {
         int n, t;
         scanf("%d %d", &n, &t);
-		vector<vector<double> > a( n , vector<double> (n, 0));
-		vector<vector<double> > l( n , vector<double> (n, 0));
-		vector<vector<double> > u( n , vector<double> (n, 0));
+		vector<double > a( n*n ,0 );
+		vector<double> l( n*n ,0);
+		vector<double> u( n*n , 0);
 		vector<vector<double> > a_copy( n , vector<double> (n, 0));
 		vector<double> pi( n);
 		int start = time(0);
@@ -17,13 +20,13 @@ int main(int argc, char const *argv[])
 			#pragma omp for collapse(2)
 			for(int i=0; i<n; i++){
 				for(int j=0;j<n;j++){
-					a[i][j] = drand48();
-					a_copy[i][j] = a[i][j];
+					a[change_index(i,j,n)] = drand48();
+					a_copy[i][j] = a[change_index(i,j,n)];
 				}
 			}
 			#pragma omp for
 			for(int i=0;i<n;i++){
-				l[i][i]=1.0f;
+				l[change_index(i,i,n)]=1.0f;
 			}
 			#pragma omp for
 			for(int i = 0; i < n; i++)
@@ -49,9 +52,9 @@ int main(int argc, char const *argv[])
 				//#pragma omp parallel for reduction(max:max_val) reduction(=:k_1)
 				for(int i = k; i < n; i++)
                 {
-                        if(max_val < abs(a[i][k]))
+                        if(max_val < abs(a[change_index(i,k,n)]))
                         {
-                                max_val = abs(a[i][k]);
+                                max_val = abs(a[change_index(i,k,n)]);
                                 k_1 = i;
                         }
                 }
@@ -69,28 +72,28 @@ int main(int argc, char const *argv[])
                 pi[k_1] = temp;
 				#pragma omp parallel for
 				for(int i=0;i<n;i++){
-					double temp1 = a[k][i];
-					a[k][i]=a[k_1][i];
-					a[k_1][i]=temp1;
+					double temp1 = a[change_index(k,i,n)];
+					a[change_index(k,i,n)]=a[change_index(k_1,i,n)];
+					a[change_index(k_1,i,n)]=temp1;
 				}
 				#pragma omp parallel for
 				for(int i=0;i<k;i++){
-					double temp1 = l[k][i];
-					l[k][i]=l[k_1][i];
-					l[k_1][i]=temp1;
+					double temp1 = l[change_index(k,i,n)];
+					l[change_index(k,i,n)]=l[change_index(k_1,i,n)];
+					l[change_index(k_1,i,n)]=temp1;
 				}
-				u[k][k]=a[k][k];
+				u[change_index(k,k,n)]=a[change_index(k,k,n)];
 				#pragma omp parallel for
 				for (int i = k+1; i < n; i++)
                 {
-                        l[i][k] = a[i][k]/u[k][k];
-                        u[k][i] = a[k][i];
+                        l[change_index(i,k,n)] = a[change_index(i,k,n)]/u[change_index(k,k,n)];
+                        u[change_index(k,i,n)] = a[change_index(k,i,n)];
 						//cout<<l[i][k]<<endl;
                 }
-				#pragma omp parallel for collapse(2)
+				#pragma omp parallel for 
 				for(int i=k+1;i<n;i++){
 					for(int j=k+1;j<n;j++){
-						a[i][j]-=l[i][k]*u[k][j];
+						a[change_index(i,j,n)]-=l[change_index(i,k,n)]*u[change_index(k,j,n)];
 					}
 				}
         }
@@ -102,7 +105,7 @@ int main(int argc, char const *argv[])
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
 				for(int k=0;k<n;k++){
-					r[i][j]+=l[i][k]*u[k][j];
+					r[i][j]+=l[change_index(i,k,n)]*u[change_index(k,j,n)];
 				}
 				double cache = a_copy[(int)pi[i]][j] - r[i][j];
 				res+=cache*cache;
