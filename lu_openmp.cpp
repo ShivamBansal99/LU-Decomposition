@@ -4,10 +4,11 @@ int main(int argc, char const *argv[])
 {
         int n, t;
         scanf("%d %d", &n, &t);
-        double a[n][n], pi[n];
-		double l[n][n] = {0.0f};
-		double u[n][n] = {0.0f};
-		double a_copy[n][n];
+		vector<vector<double> > a( n , vector<double> (n, 0));
+		vector<vector<double> > l( n , vector<double> (n, 0));
+		vector<vector<double> > u( n , vector<double> (n, 0));
+		vector<vector<double> > a_copy( n , vector<double> (n, 0));
+		vector<double> pi( n);
 		
 		srand((unsigned)0); 	
 		for(int i=0; i<n; i++){
@@ -23,20 +24,6 @@ int main(int argc, char const *argv[])
 			l[i][i]=1.0f;
 		}
 		
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<u[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<l[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
         for(int i = 0; i < n; i++)
         {
                 pi[i] = i;
@@ -96,7 +83,7 @@ int main(int argc, char const *argv[])
 				}
         }
 		double res =0.0;
-		double r[n][n];
+		vector<vector<double> > r( n , vector<double> (n, 0));
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
 				r[i][j] =0;
@@ -108,36 +95,36 @@ int main(int argc, char const *argv[])
 			}
 		}
 		cout<<res<<endl;
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<a_copy[(int)pi[i]][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<u[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<l[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-		for(int i=0;i<n;i++){
-			for(int j=0;j<n;j++){
-				cout<<r[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-		for(int i=0;i<n;i++){
-				cout<<pi[i]<<' ';
-		}
+		// for(int i=0;i<n;i++){
+			// for(int j=0;j<n;j++){
+				// cout<<a_copy[(int)pi[i]][j]<<' ';
+			// }
+			// cout<<endl;
+		// }
+		// cout<<endl;
+		// for(int i=0;i<n;i++){
+			// for(int j=0;j<n;j++){
+				// cout<<u[i][j]<<' ';
+			// }
+			// cout<<endl;
+		// }
+		// cout<<endl;
+		// for(int i=0;i<n;i++){
+			// for(int j=0;j<n;j++){
+				// cout<<l[i][j]<<' ';
+			// }
+			// cout<<endl;
+		// }
+		// cout<<endl;
+		// for(int i=0;i<n;i++){
+			// for(int j=0;j<n;j++){
+				// cout<<r[i][j]<<' ';
+			// }
+			// cout<<endl;
+		// }
+		// cout<<endl;
+		// for(int i=0;i<n;i++){
+				// cout<<pi[i]<<' ';
+		// }
         return 0;
 }
