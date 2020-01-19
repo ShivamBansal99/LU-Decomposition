@@ -13,7 +13,8 @@ int main(int argc, char const *argv[])
 		vector<double> u( n*n , 0);
 		vector<vector<double> > a_copy( n , vector<double> (n, 0));
 		vector<double> pi( n);
-		int start = time(0);
+		//double start = time(0);
+		auto start = chrono::high_resolution_clock::now();
 		omp_set_num_threads(t);
 		#pragma omp parallel
 		{
@@ -90,15 +91,19 @@ int main(int argc, char const *argv[])
                         u[change_index(k,i,n)] = a[change_index(k,i,n)];
 						//cout<<l[i][k]<<endl;
                 }
-				#pragma omp parallel for 
+				int k1 = k*n;
+				#pragma omp distribute parallel for	simd
 				for(int i=k+1;i<n;i++){
+					int i1= i*n;
+					register double temp1 = l[i1+k];
 					for(int j=k+1;j<n;j++){
-						a[change_index(i,j,n)]-=l[change_index(i,k,n)]*u[change_index(k,j,n)];
+						a[i1+j]-=temp1*u[k1+j];
 					}
 				}
         }
-		int stop = time(0);
-		cout<<"time taken: "<<stop-start<<endl;
+		//double stop = time(0);
+		auto stop = chrono::high_resolution_clock::now();
+		cout<<"time taken: "<<(double)(chrono::duration_cast<chrono::milliseconds>(stop-start).count())/1000<<endl;
 		double res =0.0;
 		vector<vector<double> > r( n , vector<double> (n, 0));
 		#pragma omp parallel for collapse(2) reduction(+:res)
